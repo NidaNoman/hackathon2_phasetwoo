@@ -1,7 +1,9 @@
 {
+  "/_not-found": "app/_not-found.js",
   "/page": "app/page.js",
   "/(auth)/login/page": "app/(auth)/login/page.js",
   "/tasks/page": "app/tasks/page.js",
   "/(auth)/signup/page": "app/(auth)/signup/page.js",
+  "/tasks/[id]/page": "app/tasks/[id]/page.js",
   "/tasks/[id]/edit/page": "app/tasks/[id]/edit/page.js"
 }
