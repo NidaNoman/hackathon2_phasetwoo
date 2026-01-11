@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { api } from "@/lib/api";
-import { Task, TaskUpdate, TaskStatus } from "~/packages/types";
+import { Task, UpdateTask, TaskStatus } from "~/packages/types";
 import { Button } from "./ui/Button";
 import { Input } from "./ui/Input";
 import { Label } from "./ui/Label";
@@ -60,7 +60,7 @@ export function UpdateTaskForm({ task, onTaskUpdated }: UpdateTaskFormProps) {
     setLoading(true);
 
     try {
-      const updatedTask: TaskUpdate = { title, description, status };
+      const updatedTask: UpdateTask = { title, description, status };
       await api.put(`/api/v1/tasks/${task.id}/`, updatedTask, true);
       setMessage("Task updated successfully!");
       setIsError(false);

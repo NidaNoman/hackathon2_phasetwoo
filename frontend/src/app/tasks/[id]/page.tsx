@@ -15,7 +15,7 @@ export default function TaskDetailPage() {
   const [task, setTask] = useState<Task | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
 
   const fetchTask = useCallback(async () => {
     setLoading(true);
@@ -37,18 +37,11 @@ export default function TaskDetailPage() {
     }
   }, [taskId, fetchTask]);
 
-  const handleDeleteConfirm = () => {
-    setShowDeleteConfirm(true);
-  };
 
   const handleTaskDeleted = (deletedTaskId: number) => {
-    setShowDeleteConfirm(false);
     router.push("/tasks"); // Redirect to task list after deletion
   };
 
-  const handleCancelDelete = () => {
-    setShowDeleteConfirm(false);
-  };
 
   if (loading) {
     return <div className="container mx-auto p-4">Loading task...</div>;
@@ -85,22 +78,19 @@ export default function TaskDetailPage() {
           >
             Edit
           </Link>
-          <button
-            onClick={handleDeleteConfirm}
-            className="px-4 py-2 bg-red-600 text-white font-semibold rounded-md shadow-sm hover:bg-red-700"
+          <DeleteTaskConfirm
+            taskId={task.id}
+            taskTitle={task.title}
+            onDeleteSuccess={handleTaskDeleted}
           >
-            Delete
-          </button>
+            <button
+              className="px-4 py-2 bg-red-600 text-white font-semibold rounded-md shadow-sm hover:bg-red-700"
+            >
+              Delete
+            </button>
+          </DeleteTaskConfirm>
         </div>
       </div>
-
-      {showDeleteConfirm && (
-        <DeleteTaskConfirm
-          task={task}
-          onConfirm={handleTaskDeleted}
-          onCancel={handleCancelDelete}
-        />
-      )}
     </div>
   );
 }

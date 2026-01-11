@@ -16,3 +16,5 @@ export interface UpdateTask {
   description?: string;
   status?: "pending" | "completed";
 }
+
+export type TaskStatus = "pending" | "completed";
