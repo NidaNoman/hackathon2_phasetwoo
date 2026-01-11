@@ -1,0 +1,84 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;       /* White */
+    --foreground: 222 47% 11%;    /* Dark Slate Blue */
+    
+    --card: 0 0% 100%;             /* White */
+    --card-foreground: 222 47% 11%;/* Dark Slate Blue */
+    
+    --popover: 0 0% 100%;          /* White */
+    --popover-foreground: 222 47% 11%;/* Dark Slate Blue */
+    
+    --primary: 220 89% 49%;        /* Vibrant Blue */
+    --primary-foreground: 210 40% 98%; /* Off-White */
+    
+    --secondary: 210 40% 96.1%;    /* Light Gray */
+    --secondary-foreground: 222 47% 11%;/* Dark Slate Blue */
+    
+    --muted: 210 40% 96.1%;        /* Light Gray */
+    --muted-foreground: 215 14.5% 46.5%;/* Medium Gray */
+    
+    --accent: 210 40% 96.1%;       /* Light Gray */
+    --accent-foreground: 222 47% 11%;/* Dark Slate Blue */
+    
+    --destructive: 0 84.2% 60.2%;  /* Red */
+    --destructive-foreground: 210 40% 98%;/* Off-White */
+    
+    --border: 214 32% 91%;        /* Light Border Gray */
+    --input: 214 32% 91%;         /* Light Input Border Gray */
+    --ring: 220 89% 49%;           /* Vibrant Blue */
+    
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%; /* Dark Background */
+    --foreground: 210 40% 98%;    /* Light Foreground */
+    
+    --card: 222.2 84% 4.9%;       /* Dark Card */
+    --card-foreground: 210 40% 98%;/* Light Card Foreground */
+    
+    --popover: 222.2 84% 4.9%;     /* Dark Popover */
+    --popover-foreground: 210 40% 98%;/* Light Popover Foreground */
+    
+    --primary: 217.2 91.2% 59.8%;  /* Darker Vibrant Blue */
+    --primary-foreground: 222.2 47.4% 11.2%; /* Dark Primary Foreground */
+    
+    --secondary: 217.2 32.4% 17.5%;/* Dark Secondary */
+    --secondary-foreground: 210 40% 98%;/* Light Secondary Foreground */
+    
+    --muted: 217.2 32.4% 17.5%;    /* Dark Muted */
+    --muted-foreground: 215.4 16.3% 56.9%;/* Medium Dark Gray */
+    
+    --accent: 217.2 32.4% 17.5%;   /* Dark Accent */
+    --accent-foreground: 210 40% 98%;/* Light Accent Foreground */
+    
+    --destructive: 0 62.8% 30.6%;  /* Dark Destructive Red */
+    --destructive-foreground: 210 40% 98%;/* Light Destructive Foreground */
+    
+    --border: 217.2 32.4% 17.5%;   /* Dark Border */
+    --input: 217.2 32.4% 17.5%;    /* Dark Input Border */
+    --ring: 217.2 91.2% 59.8%;     /* Darker Vibrant Blue Ring */
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight;
+  }
+  h1 { @apply text-4xl; }
+  h2 { @apply text-3xl; }
+  h3 { @apply text-2xl; }
+  h4 { @apply text-xl; }
+  p { @apply leading-relaxed; }
+}
