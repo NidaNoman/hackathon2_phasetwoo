@@ -1,5 +1,5 @@
 # backend/app/core/security.py
-# T014 [P] Implement backend/app/core/security.py for password hashing and JWT token handling
+# Fixed version: safe password truncation for bcrypt, supports UTF-8
 
 from datetime import datetime, timedelta
 from typing import Union, Any
@@ -16,21 +16,43 @@ ALGORITHM = settings.ALGORITHM
 ACCESS_TOKEN_EXPIRE_MINUTES = settings.ACCESS_TOKEN_EXPIRE_MINUTES
 SECRET_KEY = settings.SECRET_KEY
 
-def verify_password(plain_password: str, hashed_password: str) -> bool:
+MAX_BCRYPT_BYTES = 72  # bcrypt max bytes
+
+def _truncate_password(password: str) -> str:
     """
-    Verify a plain password against a hashed password.
+    Truncate password to 72 bytes safely for bcrypt.
+    Works with UTF-8 characters (including emojis).
     """
-    return pwd_context.verify(plain_password, hashed_password)
+    password_bytes = password.encode('utf-8')[:MAX_BCRYPT_BYTES]
+    return password_bytes.decode('utf-8', errors='ignore')
+
+# ------------------------------
+# Password hashing / verification
+# ------------------------------
 
 def get_password_hash(password: str) -> str:
     """
-    Hash a plain password.
+    Hash a plain password safely for bcrypt.
     """
-    # Truncate password to 72 characters as required by bcrypt
-    # passlib's bcrypt handler can accept unicode, but bcrypt itself has a 72 byte limit.
-    # Limiting to 72 characters is a pragmatic solution.
-    truncated_password = password[:72]
-    return pwd_context.hash(truncated_password)
+    try:
+        safe_password = _truncate_password(password)
+        return pwd_context.hash(safe_password)
+    except Exception as e:
+        raise ValueError(f"Password hashing failed: {e}")
+
+
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    """
+    Verify a plain password against the hashed password.
+    Truncates password to 72 bytes for bcrypt verification.
+    """
+    safe_password = _truncate_password(plain_password)
+    return pwd_context.verify(safe_password, hashed_password)
+
+
+# ------------------------------
+# JWT token functions
+# ------------------------------
 
 def create_access_token(
     subject: Union[str, Any], expires_delta: timedelta = None
@@ -38,13 +60,11 @@ def create_access_token(
     """
     Create a JWT access token.
     """
-    if expires_delta:
-        expire = datetime.utcnow() + expires_delta
-    else:
-        expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    expire = datetime.utcnow() + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
     to_encode = {"exp": expire, "sub": str(subject)}
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
+
 
 def decode_access_token(token: str) -> Union[str, None]:
     """

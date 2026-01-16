@@ -6,6 +6,10 @@ import { api } from "@/lib/api";
 import { Task } from "~/packages/types";
 import { DeleteTaskConfirm } from "@/components/DeleteTaskConfirm";
 import Link from "next/link";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
+import { ArrowLeft, Edit, Trash2 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export default function TaskDetailPage() {
   const router = useRouter();
@@ -44,53 +48,63 @@ export default function TaskDetailPage() {
 
 
   if (loading) {
-    return <div className="container mx-auto p-4">Loading task...</div>;
+    return (
+        <div className="flex justify-center items-center h-full">
+            <div className="text-xl font-semibold">Loading task...</div>
+        </div>
+    );
   }
 
   if (error) {
-    return <div className="container mx-auto p-4 text-red-500">{error}</div>;
+    return <div className="text-center p-8 border-2 border-dashed border-destructive/50 rounded-lg bg-destructive/10 text-destructive space-y-4">{error}</div>;
   }
 
   if (!task) {
-    return <div className="container mx-auto p-4">Task not found.</div>;
+    return <div className="text-center p-8 border-2 border-dashed rounded-lg">Task not found.</div>;
   }
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Task Details</h1>
-      <div className="p-4 border rounded-md shadow-sm">
-        <h3 className="text-xl font-semibold">{task.title}</h3>
-        {task.description && (
-          <p className="text-gray-700 mt-2">{task.description}</p>
-        )}
-        <p
-          className={`text-md font-medium mt-2 ${
-            task.status === "completed" ? "text-green-600" : "text-yellow-600"
-          }`}
-        >
-          Status: {task.status}
-        </p>
-
-        <div className="mt-4 flex space-x-2">
-          <Link
-            href={`/tasks/${task.id}/edit`}
-            className="px-4 py-2 bg-blue-600 text-white font-semibold rounded-md shadow-sm hover:bg-blue-700"
-          >
-            Edit
-          </Link>
+    <div className="max-w-2xl mx-auto">
+        <Button variant="ghost" onClick={() => router.back()} className="mb-4">
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back to tasks
+        </Button>
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-2xl">{task.title}</CardTitle>
+          {task.description && (
+            <CardDescription>{task.description}</CardDescription>
+          )}
+        </CardHeader>
+        <CardContent>
+            <span
+                className={cn(
+                    "inline-flex items-center rounded-full px-3 py-1 text-sm font-semibold",
+                    task.status === "completed"
+                    ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
+                    : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300"
+                )}
+                >
+                {task.status}
+            </span>
+        </CardContent>
+        <CardFooter className="flex justify-end gap-3">
+          <Button asChild variant="outline">
+            <Link href={`/tasks/${task.id}/edit`}>
+                <Edit className="mr-2 h-4 w-4" /> Edit
+            </Link>
+          </Button>
           <DeleteTaskConfirm
             taskId={task.id}
             taskTitle={task.title}
             onDeleteSuccess={handleTaskDeleted}
           >
-            <button
-              className="px-4 py-2 bg-red-600 text-white font-semibold rounded-md shadow-sm hover:bg-red-700"
-            >
-              Delete
-            </button>
+            <Button variant="destructive">
+                <Trash2 className="mr-2 h-4 w-4" /> Delete
+            </Button>
           </DeleteTaskConfirm>
-        </div>
-      </div>
+        </CardFooter>
+      </Card>
     </div>
   );
 }

@@ -1,19 +1,32 @@
-import Link from 'next/link';
+"use client";
+
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
 
 export default function HomePage() {
+  const router = useRouter();
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="relative z-10 w-full max-w-md rounded-xl bg-white/80 p-8 text-center shadow-xl backdrop-blur-md md:max-w-lg lg:max-w-3xl">
-        <h1 className="mb-4 text-5xl font-extrabold tracking-tight text-gray-900 sm:text-6xl lg:text-7xl">
-          Welcome to <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-700">TaskFlow</span>
+    <main className="relative flex flex-col items-center justify-center min-h-[calc(100vh-80px)] text-center px-4 sm:px-6 lg:px-8 overflow-hidden">
+      <div className="absolute inset-0 z-0 opacity-10">
+        <div className="absolute inset-0 bg-grid-pattern"></div>
+      </div>
+
+      <div className="relative z-10 w-full max-w-4xl space-y-8 py-12">
+        <h1 className="text-6xl font-extrabold tracking-tight text-white sm:text-7xl lg:text-8xl leading-tight">
+          Achieve More, <span className="text-blue-400 drop-shadow-lg">Seamlessly.</span>
         </h1>
-        <p className="mb-8 text-lg text-gray-700 sm:text-xl md:text-2xl">
-          Your intuitive platform for managing tasks with ease and efficiency.
+        <p className="text-xl text-gray-300 sm:text-2xl md:text-3xl max-w-3xl mx-auto font-light leading-relaxed">
+          Your ultimate productivity companion. Organize tasks, conquer goals, and reclaim your time with an intuitive and powerful experience.
         </p>
-        <div className="flex justify-center">
-          <Button asChild size="lg" className="rounded-full px-8 py-3 text-lg font-semibold shadow-lg transition-all duration-300 hover:scale-105">
-            <Link href="/tasks">Get Started</Link>
+
+        <div className="flex justify-center pt-4">
+          <Button
+            size="lg"
+            className="rounded-full px-12 py-7 text-xl font-bold bg-blue-600 hover:bg-blue-700 text-white shadow-xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50"
+            onClick={() => router.push('/tasks')}
+          >
+            Start Your Journey
           </Button>
         </div>
       </div>

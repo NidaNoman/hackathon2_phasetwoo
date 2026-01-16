@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { api } from "@/lib/api";
 import { Task } from "~/packages/types";
-import { UpdateTaskForm } from "@/components/UpdateTaskForm"; // Assuming this component will be created
+import { UpdateTaskForm } from "@/components/UpdateTaskForm";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
@@ -44,47 +44,25 @@ export default function EditTaskPage({ params }: EditTaskPageProps) {
     fetchTask();
   }, [taskId]);
 
-  const handleTaskUpdated = () => {
-    router.push("/tasks"); // Redirect to tasks list after successful update
-  };
-
   if (loading) {
     return (
-      <Card className="shadow-lg p-6 text-center">
-        <CardTitle>Loading Task...</CardTitle>
-        <p className="text-muted-foreground mt-2">Please wait while we fetch the task details.</p>
-      </Card>
+        <div className="flex justify-center items-center h-full">
+            <div className="text-xl font-semibold">Loading task editor...</div>
+        </div>
     );
   }
 
   if (error) {
-    return (
-      <Card className="shadow-lg p-6 text-center border-destructive">
-        <CardTitle className="text-destructive">Error</CardTitle>
-        <p className="text-muted-foreground mt-2">{error}</p>
-        <Button onClick={() => router.push("/tasks")} className="mt-4">Back to Tasks</Button>
-      </Card>
-    );
+    return <div className="text-center p-8 border-2 border-dashed border-destructive/50 rounded-lg bg-destructive/10 text-destructive space-y-4">{error}</div>;
   }
 
   if (!task) {
-    return (
-      <Card className="shadow-lg p-6 text-center">
-        <CardTitle>Task Not Found</CardTitle>
-        <p className="text-muted-foreground mt-2">The task you are looking for does not exist.</p>
-        <Button onClick={() => router.push("/tasks")} className="mt-4">Back to Tasks</Button>
-      </Card>
-    );
+    return <div className="text-center p-8 border-2 border-dashed rounded-lg">Task not found.</div>;
   }
 
   return (
-    <Card className="shadow-lg">
-      <CardHeader>
-        <CardTitle className="text-2xl font-bold">Edit Task</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <UpdateTaskForm task={task} onTaskUpdated={handleTaskUpdated} />
-      </CardContent>
-    </Card>
+    <div className="max-w-2xl mx-auto">
+        <UpdateTaskForm task={task} />
+    </div>
   );
 }

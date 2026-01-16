@@ -33,8 +33,16 @@ def register_user(
             detail="Username already registered"
         )
     
-    user = create_user(session, user_create)
-    return user
+    try:
+        user = create_user(session, user_create)
+        return user
+    except Exception as e:
+        # After the previous change to crud/user.py, this will catch the raised SQLAlchemyError
+        # and any other unexpected errors during user creation.
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"An internal error occurred during user registration: {e}"
+        )
 
 @router.post("/login")
 def login_for_access_token(

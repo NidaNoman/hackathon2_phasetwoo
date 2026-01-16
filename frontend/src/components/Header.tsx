@@ -1,46 +1,39 @@
-"use client";
+'use client';
 
-import React from "react";
-import Link from "next/link";
-import { useRouter, usePathname } from "next/navigation";
-import { useAuth } from "@/lib/state/authContext";
-import { Button } from "./ui/Button";
-import { LogOut, LayoutDashboard } from "lucide-react"; // Icons for logout and dashboard
+import { useAuth } from '@/lib/state/authContext';
+import { Button } from './ui/Button';
+import { LogOut } from 'lucide-react';
+import Link from 'next/link';
 
 export function Header() {
-  const router = useRouter();
-  const pathname = usePathname();
-  const { isAuthenticated, logout } = useAuth();
-
-  const handleLogout = () => {
-    logout();
-    router.push("/login");
-  };
-
-  // Only show Header on authenticated routes (e.g., /tasks)
-  // Or adjust logic if Header should be visible on other pages with different content
-  const showHeader = isAuthenticated && pathname !== "/login" && pathname !== "/signup";
-
-  if (!showHeader) {
-    return null;
-  }
+  const { logout } = useAuth();
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b bg-background shadow-sm">
-      <div className="container flex h-16 items-center justify-between">
-        <Link href="/tasks" className="flex items-center space-x-2">
-          <LayoutDashboard className="h-6 w-6 text-primary" />
-          <span className="font-bold text-xl hidden sm:inline-block">TaskFlow</span>
+    <header className="flex items-center justify-between py-3 px-6 bg-gray-900/80 backdrop-blur-md border-b border-gray-800 sticky top-0 z-50 shadow-lg">
+      <div className="flex items-center gap-8">
+        <Link href="/" className="text-3xl font-extrabold text-white hover:text-blue-400 transition-colors duration-200 tracking-tight">
+          TaskFlow
         </Link>
-        <nav>
-          {isAuthenticated && (
-            <Button variant="ghost" onClick={handleLogout} className="flex items-center space-x-2">
-              <LogOut className="h-5 w-5" />
-              <span className="hidden sm:inline-block">Logout</span>
-            </Button>
-          )}
+        <nav className="hidden md:flex items-center space-x-7">
+          <Link href="/tasks" className="text-gray-300 hover:text-blue-400 transition-colors duration-200 text-lg font-medium">
+            Tasks
+          </Link>
+          <Link href="/completed" className="text-gray-400 hover:text-blue-400 transition-colors duration-200 text-lg font-medium">
+            Completed
+          </Link>
+          <Link href="/profile" className="text-gray-400 hover:text-blue-400 transition-colors duration-200 text-lg font-medium">
+            Profile
+          </Link>
         </nav>
       </div>
+      <Button 
+        onClick={logout} 
+        variant="ghost" 
+        size="icon" 
+        className="text-gray-300 hover:text-red-400 hover:bg-gray-700/50 transition-colors duration-200 rounded-full"
+      >
+        <LogOut className="h-6 w-6" />
+      </Button>
     </header>
   );
 }

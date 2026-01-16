@@ -6,11 +6,13 @@ export default function TasksLayout({
   children: React.ReactNode;
 }) {
   return (
-    <>
-      <Header />
-      <main className="container mx-auto py-6 px-4">
-        {children}
-      </main>
-    </>
+    <div className="flex flex-col h-screen bg-background">
+        <Header />
+        <main className="flex-1 overflow-y-auto p-8">
+            <div className="container mx-auto">
+                {children}
+            </div>
+        </main>
+    </div>
   );
 }

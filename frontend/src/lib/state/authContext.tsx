@@ -14,38 +14,13 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Helper function to get a cookie
-const getCookie = (name: string): string | null => {
-  if (typeof document === 'undefined') return null; // Ensure document is defined
-  const nameEQ = name + '=';
-  const ca = document.cookie.split(';');
-  for (let i = 0; i < ca.length; i++) {
-    let c = ca[i];
-    while (c.charAt(0) === ' ') c = c.substring(1, c.length);
-    if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
-  }
-  return null;
-};
-
-// Helper function to set a cookie
-const setCookie = (name: string, value: string, days: number) => {
-  if (typeof document === 'undefined') return; // Ensure document is defined
-  let expires = '';
-  if (days) {
-    const date = new Date();
-    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-    expires = '; expires=' + date.toUTCString();
-  }
-  document.cookie = name + '=' + (value || '') + expires + '; path=/';
-};
-
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [token, setToken] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
   useEffect(() => {
-    // Attempt to load token from cookie on initial load
-    const storedToken = getCookie('accessToken');
+    // Attempt to load token from localStorage on initial load
+    const storedToken = localStorage.getItem('accessToken');
     if (storedToken) {
       setToken(storedToken);
       setIsAuthenticated(true);
@@ -53,13 +28,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const login = (newToken: string) => {
-    setCookie('accessToken', newToken, 7); // Store token in cookie for 7 days
+    localStorage.setItem('accessToken', newToken); // Store token in localStorage
     setToken(newToken);
     setIsAuthenticated(true);
   };
 
   const logout = () => {
-    setCookie('accessToken', '', 0); // Clear token cookie
+    localStorage.removeItem('accessToken'); // Remove token from localStorage
     setToken(null);
     setIsAuthenticated(false);
   };
@@ -78,3 +53,4 @@ export const useAuth = () => {
   }
   return context;
 };
+

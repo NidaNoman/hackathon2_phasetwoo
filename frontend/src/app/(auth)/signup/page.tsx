@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Label } from '@/components/ui/Label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Alert, AlertDescription } from '@/components/ui/Alert'; // Import Alert
 
 export default function SignUpPage() {
   const [username, setUsername] = useState('');
@@ -44,52 +45,55 @@ export default function SignUpPage() {
     }
   };
 
-  return (
-    <Card className="shadow-lg">
-      <CardHeader className="text-center">
-        <CardTitle className="text-2xl font-bold">Sign up for an account</CardTitle>
-        <CardDescription>Enter your details below to create an account</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid gap-2">
-            <Label htmlFor="username">Username</Label>
-            <Input
-              id="username"
-              type="text"
-              placeholder="username"
-              required
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              disabled={loading}
-            />
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              type="password"
-              placeholder="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              disabled={loading}
-            />
-          </div>
-
-          {error && <p className="text-destructive text-sm text-center">{error}</p>}
-
-          <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? 'Signing up...' : 'Sign up'}
-          </Button>
-        </form>
-        <div className="mt-4 text-center text-sm text-muted-foreground">
-          Already have an account?{' '}
-          <Link href="/login" className="underline underline-offset-4">
-            Log in
-          </Link>
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
+    return (
+      <div className="flex min-h-screen items-center justify-center py-12">
+              <Card>
+                <CardHeader className="text-center">
+                  <CardTitle className="text-3xl font-bold">TaskFlow</CardTitle>
+                  <CardDescription>Create your account</CardDescription>
+                </CardHeader>
+                <CardContent>            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="grid gap-2">
+                <Label htmlFor="username">Username</Label>
+                <Input
+                  id="username"
+                  type="text"
+                  placeholder="Choose a username"
+                  required
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  disabled={loading}
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="Create a password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  disabled={loading}
+                />
+              </div>
+  
+              {error && (
+                <Alert variant="destructive">
+                  <AlertDescription className="text-center">{error}</AlertDescription>
+                </Alert>
+              )}
+  
+              <Button type="submit" className="w-full text-base" disabled={loading}>
+                {loading ? 'Signing up...' : 'Sign up'}
+              </Button>
+            </form>
+            <div className="mt-6 text-center text-base text-muted-foreground">
+              Already have an account?{' '}
+              <Link href="/login" className="underline underline-offset-4 hover:text-primary">
+                Log in
+              </Link>
+            </div>
+                  </CardContent>
+                </Card>      </div>
+    );}

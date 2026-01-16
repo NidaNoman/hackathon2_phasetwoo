@@ -1,11 +1,11 @@
-"use client"; // Mark as Client Component
+"use client";
 
 import React, { useState, useEffect, useCallback } from "react";
 import { CreateTaskForm } from "@/components/CreateTaskForm";
 import { TaskList } from "@/components/TaskList";
 import { api } from "@/lib/api";
 import { Task } from "~/packages/types";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card"; // Added CardHeader and CardTitle
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card"; // Import Card components
 
 export default function TasksPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -52,13 +52,13 @@ export default function TasksPage() {
     setTasks((prevTasks) => prevTasks.filter((task) => task.id !== deletedTaskId));
   };
 
-  return (
-    <div className="container mx-auto py-8">
-      <h1 className="text-4xl font-bold mb-8">Your TaskFlow Dashboard</h1>
+  const pendingTasks = tasks.filter(task => task.status === 'pending');
+  const completedTasks = tasks.filter(task => task.status === 'completed');
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {/* Create Task Form Section */}
-        <Card className="md:col-span-1 shadow-lg h-fit"> {/* h-fit to prevent card from expanding unnecessarily */}
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 py-8">
+      <div className="lg:col-span-1 space-y-8">
+        <Card>
           <CardHeader>
             <CardTitle>Create New Task</CardTitle>
           </CardHeader>
@@ -66,25 +66,31 @@ export default function TasksPage() {
             <CreateTaskForm onTaskCreated={handleTaskCreated} />
           </CardContent>
         </Card>
+      </div>
+      <div className="lg:col-span-2 space-y-8"> {/* Added space-y-8 for vertical spacing */}
+        <h2 className="text-3xl font-bold mb-6 text-foreground">Pending Tasks</h2>
+        <TaskList
+          tasks={pendingTasks}
+          onStatusChange={handleTaskStatusChange}
+          onTaskDeleted={handleTaskDeleted}
+          isLoading={loading}
+          error={error}
+          onRetry={fetchTasks}
+        />
 
-        {/* Task List Section */}
-        <div className="md:col-span-2">
-          <Card className="shadow-lg">
-            <CardHeader>
-              <CardTitle>Your Tasks</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <TaskList
-                tasks={tasks}
-                onStatusChange={handleTaskStatusChange}
-                onTaskDeleted={handleTaskDeleted}
-                isLoading={loading}
-                error={error}
-                onRetry={fetchTasks}
-              />
-            </CardContent>
-          </Card>
-        </div>
+        {completedTasks.length > 0 && (
+          <>
+            <h2 className="text-3xl font-bold mt-12 mb-6 text-foreground">Completed Tasks</h2>
+            <TaskList
+              tasks={completedTasks}
+              onStatusChange={handleTaskStatusChange}
+              onTaskDeleted={handleTaskDeleted}
+              isLoading={loading}
+              error={error}
+              onRetry={fetchTasks}
+            />
+          </>
+        )}
       </div>
     </div>
   );

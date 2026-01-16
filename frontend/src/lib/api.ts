@@ -3,19 +3,6 @@
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
 
-// Helper function to get a cookie
-const getCookie = (name: string): string | null => {
-  if (typeof document === 'undefined') return null; // Ensure document is defined
-  const nameEQ = name + '=';
-  const ca = document.cookie.split(';');
-  for (let i = 0; i < ca.length; i++) {
-    let c = ca[i];
-    while (c.charAt(0) === ' ') c = c.substring(1, c.length);
-    if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
-  }
-  return null;
-};
-
 async function request<T>(
   method: string,
   path: string,
@@ -36,15 +23,14 @@ async function request<T>(
   }
 
   // Add Authorization header if authenticated
-  // TODO: Implement secure token storage/retrieval (e.g., HTTP-only cookies)
-  // For now, using localStorage as a placeholder for development.
   if (authenticated) {
-    const token = getCookie('accessToken'); // Retrieve token from cookie
+    const token = localStorage.getItem('accessToken'); // Retrieve token from localStorage
     if (token) {
       requestHeaders['Authorization'] = `Bearer ${token}`;
+      console.log(`Sending request to ${path} with Authorization: Bearer ${token.substring(0, 10)}...`); // Log for debugging
     } else {
-      console.warn('Attempted to make authenticated request without a token.');
-      throw new Error('Authentication required.');
+      console.warn('Attempted to make authenticated request without a token in localStorage.');
+      throw new Error('Authentication required: No access token found. Please log in.');
     }
   }
 
@@ -52,6 +38,8 @@ async function request<T>(
     method,
     headers: requestHeaders, // Use the dynamically created headers
     body: requestBody,
+    // Removed 'credentials' option as we are using explicit Authorization header from localStorage.
+    // This is primarily relevant for cookie-based authentication.
   };
 
   try {
@@ -86,7 +74,7 @@ async function request<T>(
       throw new Error(errorMessage);
     }
 
-    // Handle cases where response might not have a body (e.g., 204 No Content)
+    // Handle cases where response might not have a body (e.e., 204 No Content)
     if (response.status === 204) {
         return {} as T;
     }

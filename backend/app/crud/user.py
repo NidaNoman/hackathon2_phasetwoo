@@ -2,7 +2,8 @@
 # T021 [P] [US1] Implement backend CRUD operations for User
 
 from typing import Optional
-
+import logging
+from sqlalchemy.exc import SQLAlchemyError
 from sqlmodel import Session, select
 
 from app.schemas.user import UserCreate
@@ -14,12 +15,19 @@ def create_user(session: Session, user_create: UserCreate) -> User:
     """
     Creates a new user in the database.
     """
-    hashed_password = get_password_hash(user_create.password)
-    db_user = User(username=user_create.username, password_hash=hashed_password)
-    session.add(db_user)
-    session.commit()
-    session.refresh(db_user)
-    return db_user
+    try:
+        hashed_password = get_password_hash(user_create.password)
+        db_user = User(username=user_create.username, password_hash=hashed_password)
+        
+        session.add(db_user)
+        session.commit()
+        session.refresh(db_user)
+        
+        return db_user
+    except SQLAlchemyError as e:
+        logging.error(f"Database error while creating user: {e}")
+        session.rollback()
+        raise e
 
 def get_user_by_username(session: Session, username: str) -> Optional[User]:
     """
